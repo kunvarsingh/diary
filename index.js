@@ -21,6 +21,9 @@ app.use('/case',CASE);
 // mongoose.connect('mongodb://localhost:27017/advocate_case_Dairy');
 mongoose.connect('mongodb://kunvar:singhk1@ds161443.mlab.com:61443/advocate_diary');
 
+app.get('/',function(req,res){
+  res.send({message :"Welcome diary"});
+});
 
 app.use('/advo/*', function(req, res, next){
     console.log('****/ETH route required UserId in all apis uses MIDDLEWARE****');
