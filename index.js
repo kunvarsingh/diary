@@ -82,7 +82,7 @@ app.use('/advo', advo);
 
 
 
-app.listen(9090,function(req,res){
+app.listen(process.env.PORT || 9090,function(req,res){
   console.log("port 9090 is Running......................... ");
 })
 
