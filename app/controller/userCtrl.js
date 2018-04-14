@@ -3,6 +3,7 @@ var mongoose = require('mongoose');
 var nodemailer = require('nodemailer');
 var bcrypt = require('bcrypt');
 var User = require('../models/userModel.js');
+var Mail = require('../models/SendMail.js');
 var crypto = require('crypto');
 var jwt = require('jsonwebtoken');
 
@@ -37,34 +38,16 @@ var registration = function(req, res) {
                                   verificationToken :req.body.verificationToken
                                   };
 
-                                  if(requestObj.FirstName && requestObj.LasName && requestObj.Phone && requestObj.Email && requestObj.Gender && requestObj.State && requestObj.City){
+                                  if(requestObj.FirstName && requestObj.LasName && requestObj.Email){
                                     User.create(requestObj,(err, data)=>{
                                       if (err) {
                                             console.log('errrrrrrrrrrrrrrrrrr', err);
                                              res.json({ message: "error, There is unable to store record in db",status: 400 })
                                            } else if (data) {
-
-                                               res.json({meassage :"New Account has been register successfully",status : 200})
-                                               var transporter = nodemailer.createTransport({
-                                                service: 'gmail',
-                                                auth: {
-                                                    user: 'XXXXX',
-                                                    pass: 'XXXX'
-                                                }
-                                            });
-                                            var mailOptions = {
-                                                from: 'XXXXXX',
-                                                to: 'XXXXXX',
-                                                subject: 'Advocate case dairy',
-                                                text: 'this is the link for reset the password'
-                                            };
-                                            transporter.sendMail(mailOptions, function(error, info) {
-                                                if (error) {
-                                                    console.log(error);
-                                                } else {
-                                                    console.log('Email sent: ' + info.response);
-                                                }
-                                            })
+                                            requestObj.savePassword = Password;
+                                               Mail.registerMail(requestObj, function(msg) {
+                                              return  res.json({meassage :"Your account created successfully!.",status : 200})
+                                              });
                                           }
                                              else {
                                console.log("hi there are hash", data.Email);
@@ -225,13 +208,48 @@ var registration = function(req, res) {
   checkEmail = function(req, res){
      User.findOne({Email: req.body.email},{}, function (err, data) {
             if (err) {
-                res.send({message: 'No record found.',status:400});
+                return res.send({message: 'No record found.',status:400});
             } else {
                 if (!data) {
-                    res.send({message: 'Email not found!.',status:400, isExists : false});
+                    return res.send({message: 'Email not found!.',status:400, isExists : false});
                 }
                 else {
-                  res.send({message: 'good job!.',status:200, isExists : true});
+                  // update otp in db
+                  var OTP = Math.floor(Math.random() * 10000);
+                  let updated = {
+                                  "$set" : {
+                                  "OTP" : OTP
+                                 }
+                               }
+                   User.updateOne({Email: req.body.email},updated,function(err, update){
+                      if (err) {
+                          return res.send({message: 'No record found.',status:400});
+                      } else {
+                        data.OTP = OTP;
+                          console.log('***update OTP in DB***',data);
+                          Mail.sendOTPMail(data, function(msg) {
+                            console.log("email send for OTP :",msg);
+                          });
+
+                          return res.send({message: 'Please verify your OTP, we have sent on emailid.',status:200,isExists : true});
+                      }
+                  })
+                  // return res.send({message: 'good job!.',status:200, isExists : true});
+                }
+            }
+  });
+}
+
+  OTPverification = function(req, res){
+     User.findOne({OTP: req.body.OTP},{}, function (err, data) {
+            if (err) {
+                return res.send({message: 'No record found.',status:400});
+            } else {
+                if (!data) {
+                    return res.send({message: 'OTP not found!.',status:400});
+                }
+                else {
+                  return res.send({message: 'OTP is verified,Good job!.',status:200});
                 }
             }
   });
@@ -432,3 +450,4 @@ var sendOTPmail =function(req, res){
     exports.updatePassword = updatePassword;
     exports.checkEmail = checkEmail;
     exports.sendOTPmail = sendOTPmail;
+    exports.OTPverification = OTPverification;

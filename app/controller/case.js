@@ -66,6 +66,22 @@ makeCaseImportant =  (req,res) => {
     })
   }
 
+ getCurrentCase =  (req,res) => {
+    _id = req.body.userId;
+    searchDate = new Date(req.body.date);
+    
+    Case.find({startDate : searchDate},(err,data)=>{
+      if(err){
+        res.json({message : "There is error to get data from db",data : 400})
+      }else if(data){
+        res.json({message : "All cases records  here",status : 200,records : data})
+      }else{
+        res.json({message : "Error to get data",status : 400})
+      }
+    })
+  }
+
+
    getCaseById =  (req,res) => {
     let Id = req.body.id;
     Case.find({_id : Id},(err,data)=>{
@@ -177,3 +193,4 @@ let condition ={};
      exports.getCaseById = getCaseById;
      exports.getCaseByDate = getCaseByDate;
      exports.makeCaseImportant = makeCaseImportant;
+     exports.getCurrentCase = getCurrentCase;

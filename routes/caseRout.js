@@ -15,4 +15,6 @@ router.get('/getAllHearing',caseRouts.getAllHearing);
 router.post('/getCaseById',caseRouts.getCaseById);
 router.post('/getCaseByDate',caseRouts.getCaseByDate);
 router.post('/makeCaseImportant',caseRouts.makeCaseImportant);
+router.post('/getCurrentCase',caseRouts.getCurrentCase);
+
 module.exports = router;

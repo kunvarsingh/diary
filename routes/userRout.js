@@ -14,5 +14,6 @@ router.post('/resetPasswordByUserId',usered.resetPasswordByUserId);
 router.post('/updatePassword',usered.updatePassword);
 router.post('/checkEmail',usered.checkEmail);
 router.post('/sendOTPmail',usered.sendOTPmail);
+router.post('/OTPverification',usered.OTPverification);
 
 module.exports = router;
