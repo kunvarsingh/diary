@@ -6,10 +6,12 @@ var Hearing = require('../models/hearing.js');
 var addNewCase = function(req,res){
       reqobj = {
          caseName  : req.body.caseName,
+         caseNo : req.body.caseNo,
          engagedFor : req.body.engagedFor,
          courtName  : req.body.courtName,
-         clientname  : req.body.clientname,
-         opposite_Party_Name  : req.body.opposite_Party_Name,
+         clientContact  : req.body.clientContact,
+         case_nature : req.body.case_nature,
+
          opposite_Party_Advocate  : req.body.opposite_Party_Advocate,
          applicable_Act  : req.body.applicable_Act,
          remarks   : req.body.remarks,
@@ -17,7 +19,7 @@ var addNewCase = function(req,res){
          endDate : req.body.endDate,
          startDate : req.body.startDate
        };
-        if(reqobj.caseName && reqobj.engagedFor && reqobj.courtName && reqobj.clientname && reqobj.opposite_Party_Name && reqobj.opposite_Party_Advocate && reqobj.applicable_Act){
+        if(reqobj.caseName && reqobj.engagedFor && reqobj.courtName && reqobj.opposite_Party_Advocate && reqobj.applicable_Act){
               Case.create(reqobj,(err,data) => {
                   if(err){
                   res.json({message : "There  is error to save  info in db",status : 400,err:err})

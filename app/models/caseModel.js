@@ -4,10 +4,11 @@ var Schema = mongoose.Schema;
    var casedetails = new Schema({
 
        caseName               : { type : String },
+       caseNo                 : {type : String},
        engagedFor             : { type : String },
        courtName              : { type : String },
-       clientname             : { type : String },
-       opposite_Party_Name     : { type : String },
+       clientContact             : { type : String },
+       case_nature     : { type : String },
        opposite_Party_Advocate : { type : String },
        applicable_Act          : { type : String },
        remarks                 : { type : String },
